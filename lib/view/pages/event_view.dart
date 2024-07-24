@@ -18,7 +18,7 @@ class EventView extends StatelessWidget {
       child: Scaffold(
           body: Consumer<Controller>(builder: (context, controller, child) {
         return FutureBuilder(
-            future: controller.readData(),
+            future: controller.readTasks(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -26,23 +26,21 @@ class EventView extends StatelessWidget {
                 );
               }
 
-              final data = jsonDecode(snapshot.data!);
-              final event = EventModel.fromjson(data);
-
+              final data = snapshot.data;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: event.title.isEmpty
+                child: data!.isEmpty
                     ? const Center(
                         child: Text('No Events'),
                       )
                     : ListView.builder(
-                        itemCount: 1,
+                        itemCount: data.length,
                         itemBuilder: (context, index) => Container(
                           padding: const EdgeInsets.all(10),
                           color: ConstColor.lightGrey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [Text(event.title), Text(event.dueDate)],
+                            children: [Text(data[index].title), Text(data[index].dueDate)],
                           ),
                         ),
                       ),

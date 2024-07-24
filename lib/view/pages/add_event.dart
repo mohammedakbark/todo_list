@@ -50,15 +50,16 @@ class AddEvent extends StatelessWidget {
                           shape: ContinuousRectangleBorder(
                               borderRadius: BorderRadius.circular(15)),
                           backgroundColor: ConstColor.black),
-                      onPressed: () {
+                      onPressed: () async {
                         if (controller.dateController.text.isNotEmpty &&
                             controller.titleController.text.isNotEmpty) {
                           EventModel model = EventModel(
                               dueDate: controller.dateController.text,
                               isDone: false,
                               title: controller.titleController.text);
-
-                          controller.writeData(model);
+                          List<EventModel> list = await controller.readTasks();
+                          list.add(model);
+                          await controller.writeTasks(list);
                         } else {
                           log('-------enter the value-----');
                         }
@@ -84,11 +85,7 @@ class AddEvent extends StatelessWidget {
                       )),
                 ),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    controller.readData();
-                  },
-                  child: Text('getData'))
+             
             ],
           ),
         ),
