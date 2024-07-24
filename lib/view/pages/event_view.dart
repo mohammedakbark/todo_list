@@ -32,7 +32,7 @@ class EventView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: event.title.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Text('No Events'),
                       )
                     : ListView.builder(

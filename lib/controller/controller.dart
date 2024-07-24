@@ -26,7 +26,7 @@ class Controller with ChangeNotifier {
   Future<File> writeData(EventModel eventModel) async {
     String json = jsonEncode(eventModel);
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/${'note1'}.txt');
+    final File file = File('${directory.path}/note1.txt');
     print('//Done//');
     return file.writeAsString(json);
   }
@@ -43,4 +43,7 @@ class Controller with ChangeNotifier {
       return 'Error: $e';
     }
   }
+
+
+  //000000000000
 }
