@@ -24,8 +24,7 @@ class Controller with ChangeNotifier {
 //--------------------------------------------------
 
   Future<File> writeData(EventModel eventModel) async {
-    final event = EventModel.fromjson(eventModel.toJson());
-    String json = jsonEncode(event);
+    String json = jsonEncode(eventModel);
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/${'note1'}.txt');
     print('//Done//');

@@ -26,26 +26,26 @@ class EventView extends StatelessWidget {
                 );
               }
 
-              // final event = EventModel.fromjson(eventModel.toJson());
-              // String json = jsonEncode(event);
-
               final data = jsonDecode(snapshot.data!);
               final event = EventModel.fromjson(data);
-              print(data.toString());
 
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListView.builder(
-                  itemCount: 1,
-                  itemBuilder: (context, index) => Container(
-                    padding: EdgeInsets.all(10),
-                    color: ConstColor.lightGrey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text(event.title), Text(event.dueDate)],
-                    ),
-                  ),
-                ),
+                child: event.title.isEmpty
+                    ? Center(
+                        child: Text('No Events'),
+                      )
+                    : ListView.builder(
+                        itemCount: 1,
+                        itemBuilder: (context, index) => Container(
+                          padding: const EdgeInsets.all(10),
+                          color: ConstColor.lightGrey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [Text(event.title), Text(event.dueDate)],
+                          ),
+                        ),
+                      ),
               );
             });
       })),
