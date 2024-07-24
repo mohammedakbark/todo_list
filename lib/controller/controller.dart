@@ -17,22 +17,30 @@ class Controller with ChangeNotifier {
   final titleController = TextEditingController();
   final dateController = TextEditingController();
 
+  clearController() {
+    titleController.clear();
+    dateController.clear();
+    pageIndex = 1;
+    notifyListeners();
+  }
+
   getDate(DateTime dateTime) {
     dateController.text = dateTime.toString();
     notifyListeners();
   }
 //--------------------------------------------------
 
- Future<String> get _localPath async {
+  Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
-    Future<File> get _localFile async {
+
+  Future<File> get _localFile async {
     final path = await _localPath;
-    return File('$path/event.json');
+    return File('$path/events.json');
   }
 
- Future<List<EventModel>> readTasks() async {
+  Future<List<EventModel>> _readTasks() async {
     try {
       final file = await _localFile;
       if (!await file.exists()) {
@@ -46,49 +54,42 @@ class Controller with ChangeNotifier {
     }
   }
 
-  Future<File> writeTasks(List<EventModel> events) async {
+  Future<File> _writeTasks(List<EventModel> events) async {
     final file = await _localFile;
-    String jsonString = jsonEncode(events.map((task) => task.toJson()).toList());
+    String jsonString = jsonEncode(events.map((e) => e.toJson()).toList());
+    log(jsonString);
     return file.writeAsString(jsonString);
   }
 
+  //----------------------------------------------
 
+  List<EventModel> _events = [];
 
+  _getAllEvets() async {
+    _events = [];
 
+    _events = await _readTasks();
+  }
 
+  addEvent(EventModel model) async {
+    await _getAllEvets();
+    _events.add(model);
+    await _writeTasks(_events);
+  }
 
+  Future<List<EventModel>> upcomingTasks() async {
+    await _getAllEvets();
+    DateTime now = DateTime.now();
+    return _events
+        .where((task) => DateTime.parse(task.dueDate).isAfter(now))
+        .toList();
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-  // Future<File> writeData(EventModel eventModel) async {
-  //   String json = jsonEncode(eventModel);
-  //   final Directory directory = await getApplicationDocumentsDirectory();
-  //   final File file = File('${directory.path}/note1.txt');
-  //   print('//Done//');
-  //   return file.writeAsString(json);
-  // }
-
-  // Future<String> readData() async {
-  //   try {
-  //     final Directory directory = await getApplicationDocumentsDirectory();
-  //     final File file = File('${directory.path}/note1.txt');
-  //     String text = await file.readAsString();
-
-  //     print(text);
-  //     return text;
-  //   } catch (e) {
-  //     return 'Error: $e';
-  //   }
-  // }
-
-
+  Future<List<EventModel>> pastTasks() async {
+    await _getAllEvets();
+    DateTime now = DateTime.now();
+    return _events
+        .where((task) => DateTime.parse(task.dueDate).isBefore(now))
+        .toList();
+  }
 }

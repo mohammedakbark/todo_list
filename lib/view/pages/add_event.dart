@@ -32,7 +32,7 @@ class AddEvent extends StatelessWidget {
                         onPressed: () async {
                           await showDatePicker(
                                   context: context,
-                                  firstDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
                                   lastDate: DateTime(2050))
                               .then((value) => _controller.getDate(value!));
                         },
@@ -57,9 +57,9 @@ class AddEvent extends StatelessWidget {
                               dueDate: controller.dateController.text,
                               isDone: false,
                               title: controller.titleController.text);
-                          List<EventModel> list = await controller.readTasks();
-                          list.add(model);
-                          await controller.writeTasks(list);
+
+                          await controller.addEvent(model);
+                          controller.clearController();
                         } else {
                           log('-------enter the value-----');
                         }
@@ -85,7 +85,6 @@ class AddEvent extends StatelessWidget {
                       )),
                 ),
               ),
-             
             ],
           ),
         ),
